@@ -7,7 +7,6 @@ then
     cp /usr/bin/python $cur__target_dir/python.exe
 fi
 
-rm -rf third_party
 python tools/git-sync-deps
 ln -s third_party/externals/gyp tools/gyp
 if [[ $OS == "windows" ]]
