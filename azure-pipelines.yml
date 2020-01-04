@@ -104,5 +104,5 @@ jobs:
     displayName: 'docker build'
   - script: docker run --rm --mount src=`pwd`,target=/esy-skia,type=bind centos /bin/bash -c 'which ragel'
   - script: docker run --rm --mount src=`pwd`,target=/esy-skia,type=bind centos /bin/bash -c 'cd esy-skia && ls -a'
-  - script: docker run --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined --rm --mount src=`pwd`,target=/oni2,type=bind centos /bin/bash -c 'cd oni2 && ./scripts/docker-build.sh'
+  - script: docker run --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined --rm --mount src=`pwd`,target=/oni2,type=bind centos /bin/bash -c 'cd esy-skia && ./esy/docker-build.sh'
 
