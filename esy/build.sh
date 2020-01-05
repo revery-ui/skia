@@ -25,6 +25,19 @@ then
     esy/gendef.exe - $cur__target_dir/out/Shared/skia.dll > $cur__target_dir/out/Shared/skia.def
     x86_64-W64-mingw32-dlltool.exe -D $cur__target_dir/out/Shared/skia.dll -d $cur__target_dir/out/Shared/skia.def -A -l $cur__target_dir/out/Shared/libskia.a
 else
+
+    if [[ -x "/opt/rh/llvm-toolset-7.0/enable" ]]
+    then
+        echo "Manully activating llvm toolset 7.0..."
+        source /opt/rh/llvm-toolset-7.0/enable
+        echo "-- clang version:"
+        clang -v
+        echo "-- clang++ version:""
+        clang++ -v
+    else
+        echo "llvm toolset-7.0 does not need to be manually activated"
+    fi
+
     bin/gn gen $cur__target_dir/out/Static --script-executable="$PYTHON_BINARY" "--args=cc=\"clang\" cxx=\"clang++\" skia_use_system_libjpeg_turbo=true is_debug=false extra_cflags=[\"-I${ESY_LIBJPEG_TURBO_PREFIX}/include\"] extra_ldflags=[\"-L${ESY_LIBJPEG_TURBO_PREFIX}/lib\", \"-ljpeg\" ]" || exit -1
     ninja.exe -C $cur__target_dir/out/Static
 fi
