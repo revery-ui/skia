@@ -32,7 +32,7 @@ else
         source /opt/rh/llvm-toolset-7.0/enable
         echo "-- clang version:"
         clang -v
-        echo "-- clang++ version:""
+        echo "-- clang++ version:"
         clang++ -v
     else
         echo "llvm toolset-7.0 does not need to be manually activated"
