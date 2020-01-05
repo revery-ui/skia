@@ -26,8 +26,7 @@ then
     x86_64-W64-mingw32-dlltool.exe -D $cur__target_dir/out/Shared/skia.dll -d $cur__target_dir/out/Shared/skia.def -A -l $cur__target_dir/out/Shared/libskia.a
 else
 
-    if [[ -x "/opt/rh/llvm-toolset-7.0/enable" ]]
-    then
+    if ! [ -x "$(command -v clang++)" ]; then
         echo "Manully activating llvm toolset 7.0..."
         source /opt/rh/llvm-toolset-7.0/enable
         echo "-- clang version:"
