@@ -27,7 +27,7 @@ then
 else
 
     if ! [ -x "$(command -v clang++)" ]; then
-        echo "Manully activating llvm toolset 7.0..."
+        echo "Manually activating llvm toolset 7.0..."
         source /opt/rh/llvm-toolset-7.0/enable
         echo "-- clang version:"
         clang -v
