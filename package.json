@@ -56,9 +56,6 @@
   },
   "dependencies": {
     "@esy-cross/ninja-build": "^1.8.2001",
-    "esy-libjpeg-turbo": "bryphe/libjpeg-turbo#12d3cef"
-  },
-  "resolutions": {
-    "esy-nasm": "github:revery-ui/esy-nasm#64a802b"
+    "esy-libjpeg-turbo": "revery-ui/libjpeg-turbo#a494a2c"
   }
 }
