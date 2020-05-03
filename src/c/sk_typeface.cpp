@@ -82,6 +82,10 @@ sk_font_style_slant_t sk_typeface_get_font_slant(sk_typeface_t* typeface) {
     return (sk_font_style_slant_t)AsTypeface(typeface)->fontStyle().slant();
 }
 
+int sk_typeface_count_glyphs(sk_typeface_t* typeface) {
+    return AsTypeface(typeface)->countGlyphs();
+}
+
 int sk_typeface_count_tables(sk_typeface_t* typeface) {
     return AsTypeface(typeface)->countTables();
 }
@@ -96,6 +100,14 @@ size_t sk_typeface_get_table_size(sk_typeface_t* typeface, sk_font_table_tag_t t
 
 size_t sk_typeface_get_table_data(sk_typeface_t* typeface, sk_font_table_tag_t tag, size_t offset, size_t length, void* data) {
     return AsTypeface(typeface)->getTableData(tag, offset, length, data);
+}
+
+bool sk_typeface_is_fixed_pitch(sk_typeface_t* typeface) {
+    return AsTypeface(typeface)->isFixedPitch();
+}
+
+bool sk_typeface_get_kerning_pair_adjustments(sk_typeface_t* typeface, const uint16_t* glyphs, int count, int32_t* adjustments) {
+    return AsTypeface(typeface)->getKerningPairAdjustments(glyphs, count, adjustments);
 }
 
 

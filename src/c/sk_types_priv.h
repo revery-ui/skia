@@ -110,6 +110,7 @@ DEF_CLASS_MAP(GrContext, gr_context_t, GrContext)
 DEF_CLASS_MAP(GrBackendTexture, gr_backendtexture_t, GrBackendTexture)
 DEF_CLASS_MAP(GrBackendRenderTarget, gr_backendrendertarget_t, GrBackendRenderTarget)
 
+DEF_STRUCT_MAP(SkColor4f, sk_color4f_t, Color4f)
 DEF_STRUCT_MAP(SkColorSpacePrimaries, sk_colorspaceprimaries_t, ColorSpacePrimaries)
 DEF_STRUCT_MAP(SkColorSpaceTransferFn, sk_colorspace_transfer_fn_t, ColorSpaceTransferFn)
 DEF_STRUCT_MAP(SkHighContrastConfig, sk_highcontrastconfig_t, HighContrastConfig)
@@ -120,6 +121,7 @@ DEF_STRUCT_MAP(SkMask, sk_mask_t, Mask)
 DEF_STRUCT_MAP(SkPoint, sk_point_t, Point)
 DEF_STRUCT_MAP(SkPoint3, sk_point3_t, Point3)
 DEF_STRUCT_MAP(SkRect, sk_rect_t, Rect)
+DEF_STRUCT_MAP(SkRSXform, sk_rsxform_t, RSXform)
 DEF_STRUCT_MAP(SkSize, sk_size_t, Size)
 
 DEF_STRUCT_MAP(GrGLTextureInfo, gr_gl_textureinfo_t, GrGLTextureInfo)
@@ -149,6 +151,11 @@ DEF_MAP(SkPath::RawIter, sk_path_rawiterator_t, PathRawIter)
 #include "SkPngEncoder.h"
 DEF_MAP(SkPngEncoder::Options, sk_pngencoder_options_t, PngEncoderOptions)
 
+#include "SkRegion.h"
+DEF_MAP(SkRegion::Iterator, sk_region_iterator_t, RegionIterator)
+DEF_MAP(SkRegion::Cliperator, sk_region_cliperator_t, RegionCliperator)
+DEF_MAP(SkRegion::Spanerator, sk_region_spanerator_t, RegionSpanerator)
+
 #include "SkTime.h"
 DEF_MAP(SkTime::DateTime, sk_time_datetime_t, TimeDateTime)
 
@@ -158,13 +165,21 @@ DEF_MAP(SkWebpEncoder::Options, sk_webpencoder_options_t, WebpEncoderOptions)
 #include "SkMatrix.h"
 static inline SkMatrix AsMatrix(const sk_matrix_t* matrix) {
     return SkMatrix::MakeAll(
-        matrix->mat[0], matrix->mat[1], matrix->mat[2],
-        matrix->mat[3], matrix->mat[4], matrix->mat[5],
-        matrix->mat[6], matrix->mat[7], matrix->mat[8]);
+        matrix->scaleX, matrix->skewX,  matrix->transX,
+        matrix->skewY,  matrix->scaleY, matrix->transY,
+        matrix->persp0, matrix->persp1, matrix->persp2);
 }
 static inline sk_matrix_t ToMatrix(const SkMatrix* matrix) {
     sk_matrix_t m;
-    matrix->get9(m.mat);
+    m.scaleX = matrix->get(SkMatrix::kMScaleX);
+    m.skewX  = matrix->get(SkMatrix::kMSkewX);
+    m.transX = matrix->get(SkMatrix::kMTransX);
+    m.skewY  = matrix->get(SkMatrix::kMSkewY);
+    m.scaleY = matrix->get(SkMatrix::kMScaleY);
+    m.transY = matrix->get(SkMatrix::kMTransY);
+    m.persp0 = matrix->get(SkMatrix::kMPersp0);
+    m.persp1 = matrix->get(SkMatrix::kMPersp1);
+    m.persp2 = matrix->get(SkMatrix::kMPersp2);
     return m;
 }
 

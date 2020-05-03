@@ -29,6 +29,7 @@ SK_C_API bool sk_pixmap_read_pixels(const sk_pixmap_t* cpixmap, const sk_imagein
 SK_C_API bool sk_pixmap_scale_pixels(const sk_pixmap_t* cpixmap, const sk_pixmap_t* dst, sk_filter_quality_t quality);
 SK_C_API bool sk_pixmap_extract_subset(const sk_pixmap_t* cpixmap, sk_pixmap_t* result, const sk_irect_t* subset);
 SK_C_API bool sk_pixmap_erase_color(const sk_pixmap_t* cpixmap, sk_color_t color, const sk_irect_t* subset);
+SK_C_API bool sk_pixmap_erase_color4f(const sk_pixmap_t* cpixmap, const sk_color4f_t* color, const sk_irect_t* subset);
 
 SK_C_API sk_color_t sk_color_unpremultiply(const sk_pmcolor_t pmcolor);
 SK_C_API sk_pmcolor_t sk_color_premultiply(const sk_color_t color);
@@ -38,9 +39,9 @@ SK_C_API void sk_color_get_bit_shift(int* a, int* r, int* g, int* b);
 
 SK_C_API void sk_swizzle_swap_rb(uint32_t* dest, const uint32_t* src, int count);
 
-SK_C_API bool sk_webpencoder_encode(sk_wstream_t* dst, const sk_pixmap_t* src, sk_webpencoder_options_t options);
-SK_C_API bool sk_jpegencoder_encode(sk_wstream_t* dst, const sk_pixmap_t* src, sk_jpegencoder_options_t options);
-SK_C_API bool sk_pngencoder_encode(sk_wstream_t* dst, const sk_pixmap_t* src, sk_pngencoder_options_t options);
+SK_C_API bool sk_webpencoder_encode(sk_wstream_t* dst, const sk_pixmap_t* src, const sk_webpencoder_options_t* options);
+SK_C_API bool sk_jpegencoder_encode(sk_wstream_t* dst, const sk_pixmap_t* src, const sk_jpegencoder_options_t* options);
+SK_C_API bool sk_pngencoder_encode(sk_wstream_t* dst, const sk_pixmap_t* src, const sk_pngencoder_options_t* options);
 
 SK_C_PLUS_PLUS_END_GUARD
 
