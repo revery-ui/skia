@@ -429,6 +429,7 @@ config("warnings") {
       "-Wno-unused-member-function",
       "-Wno-unused-template",
       "-Wno-zero-as-null-pointer-constant",
+      "-Wanon-enum-enum-conversion",
     ]
     cflags_cc += [
       "-Wno-abstract-vbase-init",
