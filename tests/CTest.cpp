@@ -8,6 +8,7 @@
 #include "Test.h"
 #include "sk_canvas.h"
 #include "sk_paint.h"
+#include "sk_general.h"
 #include "sk_shader.h"
 #include "sk_surface.h"
 #include "sk_types.h"

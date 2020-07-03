@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -euo pipefail
+
 OS=$1
 
 # Copy artifacts into output directories

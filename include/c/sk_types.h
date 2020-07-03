@@ -55,6 +55,13 @@ typedef uint32_t sk_pmcolor_t;
 #define sk_color_get_g(c)               (((c) >>  8) & 0xFF)
 #define sk_color_get_b(c)               (((c) >>  0) & 0xFF)
 
+typedef struct sk_color4f_t {
+    float fR;
+    float fG;
+    float fB;
+    float fA;
+} sk_color4f_t;
+
 typedef enum {
     UNKNOWN_SK_COLORTYPE = 0,
     ALPHA_8_SK_COLORTYPE,
@@ -85,6 +92,7 @@ typedef enum {
 } sk_pixelgeometry_t;
 
 typedef enum {
+    NONE_SK_SURFACE_PROPS_FLAGS = 0,
     USE_DEVICE_INDEPENDENT_FONTS_SK_SURFACE_PROPS_FLAGS = 1 << 0,
 } sk_surfaceprops_flags_t;
 
@@ -111,61 +119,10 @@ typedef struct sk_rect_t {
     float   bottom;
 } sk_rect_t;
 
-/**
-    The sk_matrix_t struct holds a 3x3 perspective matrix for
-    transforming coordinates:
-
-        (X,Y) = T[M]((x,y))
-        X = (M[0] * x + M[1] * y + M[2]) / (M[6] * x + M[7] * y + M[8]);
-        Y = (M[3] * x + M[4] * y + M[5]) / (M[6] * x + M[7] * y + M[8]);
-
-    Therefore, the identity matrix is
-
-        sk_matrix_t identity = {{1, 0, 0,
-                                 0, 1, 0,
-                                 0, 0, 1}};
-
-    A matrix that scales by sx and sy is:
-
-        sk_matrix_t scale = {{sx, 0,  0,
-                              0,  sy, 0,
-                              0,  0,  1}};
-
-    A matrix that translates by tx and ty is:
-
-        sk_matrix_t translate = {{1, 0, tx,
-                                  0, 1, ty,
-                                  0, 0, 1}};
-
-    A matrix that rotates around the origin by A radians:
-
-        sk_matrix_t rotate = {{cos(A), -sin(A), 0,
-                               sin(A),  cos(A), 0,
-                               0,       0,      1}};
-
-    Two matrixes can be concatinated by:
-
-         void concat_matrices(sk_matrix_t* dst,
-                             const sk_matrix_t* matrixU,
-                             const sk_matrix_t* matrixV) {
-            const float* u = matrixU->mat;
-            const float* v = matrixV->mat;
-            sk_matrix_t result = {{
-                    u[0] * v[0] + u[1] * v[3] + u[2] * v[6],
-                    u[0] * v[1] + u[1] * v[4] + u[2] * v[7],
-                    u[0] * v[2] + u[1] * v[5] + u[2] * v[8],
-                    u[3] * v[0] + u[4] * v[3] + u[5] * v[6],
-                    u[3] * v[1] + u[4] * v[4] + u[5] * v[7],
-                    u[3] * v[2] + u[4] * v[5] + u[5] * v[8],
-                    u[6] * v[0] + u[7] * v[3] + u[8] * v[6],
-                    u[6] * v[1] + u[7] * v[4] + u[8] * v[7],
-                    u[6] * v[2] + u[7] * v[5] + u[8] * v[8]
-            }};
-            *dst = result;
-        }
-*/
 typedef struct sk_matrix_t {
-    float   mat[9];
+    float scaleX, skewX, transX;
+    float skewY, scaleY, transY;
+    float persp0, persp1, persp2;
 } sk_matrix_t;
 
 typedef struct sk_matrix44_t sk_matrix44_t;
@@ -175,7 +132,7 @@ typedef enum {
     TRANSLATE_SK_MATRIX44_TYPE_MASK = 0x01,
     SCALE_SK_MATRIX44_TYPE_MASK = 0x02,
     AFFINE_SK_MATRIX44_TYPE_MASK = 0x04,
-    PERSPECTIVE_SK_MATRIX44_TYPE_MASK = 0x08 
+    PERSPECTIVE_SK_MATRIX44_TYPE_MASK = 0x08
 } sk_matrix44_type_mask_t;
 
 /**
@@ -251,6 +208,9 @@ typedef struct sk_surface_t sk_surface_t;
     clipping areas for drawing.
 */
 typedef struct sk_region_t sk_region_t;
+typedef struct sk_region_iterator_t sk_region_iterator_t;
+typedef struct sk_region_cliperator_t sk_region_cliperator_t;
+typedef struct sk_region_spanerator_t sk_region_spanerator_t;
 
 typedef enum {
     CLEAR_SK_BLENDMODE,
@@ -293,8 +253,8 @@ typedef struct sk_point3_t {
 } sk_point3_t;
 
 typedef struct sk_ipoint_t {
-    float   x;
-    float   y;
+    int32_t   x;
+    int32_t   y;
 } sk_ipoint_t;
 
 typedef struct sk_size_t {
@@ -303,8 +263,8 @@ typedef struct sk_size_t {
 } sk_size_t;
 
 typedef struct sk_isize_t {
-    float   w;
-    float   h;
+    int32_t   w;
+    int32_t   h;
 } sk_isize_t;
 
 typedef struct sk_fontmetrics_t {
@@ -379,9 +339,9 @@ typedef struct sk_wstream_dynamicmemorystream_t sk_wstream_dynamicmemorystream_t
 typedef struct sk_document_t sk_document_t;
 
 typedef enum {
-    UTF8_ENCODING,
-    UTF16_ENCODING,
-    UTF32_ENCODING
+    UTF8_SK_ENCODING,
+    UTF16_SK_ENCODING,
+    UTF32_SK_ENCODING
 } sk_encoding_t;
 
 typedef enum {
@@ -424,6 +384,7 @@ typedef enum {
 } sk_filter_quality_t;
 
 typedef enum {
+    HAS_NONE_SK_CROP_RECT_FLAG   = 0x00,
     HAS_LEFT_SK_CROP_RECT_FLAG   = 0x01,
     HAS_TOP_SK_CROP_RECT_FLAG    = 0x02,
     HAS_WIDTH_SK_CROP_RECT_FLAG  = 0x04,
@@ -570,7 +531,7 @@ typedef enum {
     INVERTED_SK_PATH_EFFECT_TRIM_MODE,
 } sk_path_effect_trim_mode_t;
 
-typedef struct sk_path_effect_t sk_path_effect_t;  
+typedef struct sk_path_effect_t sk_path_effect_t;
 
 typedef enum {
     BUTT_SK_STROKE_CAP,
@@ -662,11 +623,6 @@ typedef struct sk_mask_t {
     sk_mask_format_t  fFormat;
 } sk_mask_t;
 
-typedef enum {
-    NONE_GR_CONTEXT_FLUSHBITS = 0,
-    DISCARD_GR_CONTEXT_FLUSHBITS = 0x2,
-} gr_context_flushbits_t;
-
 typedef intptr_t gr_backendobject_t;
 
 typedef struct gr_backendrendertarget_t gr_backendrendertarget_t;
@@ -753,6 +709,7 @@ typedef enum {
 } sk_image_caching_hint_t;
 
 typedef enum {
+    NONE_SK_BITMAP_ALLOC_FLAGS = 0,
     ZERO_PIXELS_SK_BITMAP_ALLOC_FLAGS = 1 << 0,
 } sk_bitmap_allocflags_t;
 
@@ -780,12 +737,6 @@ typedef struct sk_document_pdf_metadata_t {
     bool                fPDFA;
     int                 fEncodingQuality;
 } sk_document_pdf_metadata_t;
-
-typedef enum {
-    SRGB_SK_COLORSPACE_NAMED,
-    ADOBE_RGB_SK_COLORSPACE_NAMED,
-    SRGB_LINEAR_SK_COLORSPACE_NAMED,
-} sk_colorspace_named_t;
 
 typedef struct sk_imageinfo_t {
     sk_colorspace_t* colorspace;
@@ -891,8 +842,8 @@ typedef enum {
     PAETH_SK_PNGENCODER_FILTER_FLAGS = 0x80,
     ALL_SK_PNGENCODER_FILTER_FLAGS   = NONE_SK_PNGENCODER_FILTER_FLAGS |
                                        SUB_SK_PNGENCODER_FILTER_FLAGS |
-                                       UP_SK_PNGENCODER_FILTER_FLAGS | 
-                                       AVG_SK_PNGENCODER_FILTER_FLAGS | 
+                                       UP_SK_PNGENCODER_FILTER_FLAGS |
+                                       AVG_SK_PNGENCODER_FILTER_FLAGS |
                                        PAETH_SK_PNGENCODER_FILTER_FLAGS,
 } sk_pngencoder_filterflags_t;
 
@@ -958,6 +909,13 @@ typedef struct sk_textblob_builder_runbuffer_t {
     void* utf8text;
     void* clusters;
 } sk_textblob_builder_runbuffer_t;
+
+typedef struct {
+    float fSCos;
+    float fSSin;
+    float fTX;
+    float fTY;
+} sk_rsxform_t;
 
 SK_C_PLUS_PLUS_END_GUARD
 

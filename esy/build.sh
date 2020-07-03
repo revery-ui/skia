@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -euo pipefail
+
 OS=$1
 ESY_LIBJPEG_TURBO_PREFIX=$2
 

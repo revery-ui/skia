@@ -70,7 +70,7 @@ jobs:
       # If we have many bug we can test on all plateform
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-2016, ubuntu-latest, macos-latest]
     steps:
       - uses: actions/setup-node@v1.4.2
         with:
