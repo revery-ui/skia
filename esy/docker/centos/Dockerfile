@@ -19,11 +19,11 @@ RUN rpm -i https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/r/
 RUN node -v
 RUN npm -v
 
-RUN npm install --global --unsafe-perm=true esy@0.5.8
+RUN npm install --global --unsafe-perm=true esy@0.6.6
 
-RUN yum -y install epel-release
+RUN yum -y install https://repo.ius.io/ius-release-el7.rpm
 RUN yum -y remove git
-RUN rpm -U https://centos7.iuscommunity.org/ius-release.rpm
-RUN yum -y install git2u
+RUN yum -y install epel-release
+RUN yum -y install git222
 
 RUN yum -y install nasm
