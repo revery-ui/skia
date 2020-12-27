@@ -380,6 +380,12 @@ config("warnings") {
       # clang 10 fixes
       "-Wno-anon-enum-enum-conversion",
       "-Wno-sizeof-array-div",
+
+      # clang 10.2 fixes
+      "-Wno-psabi",
+      "-Wno-suggest-destructor-override",
+      "-Wno-suggest-override",
+      "-Wno-uninitialized-const-reference",
     ]
 
     if (target_cpu == "arm" && is_ios) {
