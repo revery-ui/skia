@@ -5,6 +5,10 @@ OS=$1
 # Copy artifacts into output directories
 mkdir -p $cur__install/include
 cp -a $cur__root/include/. $cur__install/include/
+
+mkdir -p $cur__install/include/svg/model
+cp $cur__root/experimental/svg/model/*.h $cur__install/include/svg/model/
+
 if [[ $OS == 'windows' ]]
 then
     cp $cur__target_dir/out/Shared/libskia.a $cur__lib

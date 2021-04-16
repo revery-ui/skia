@@ -41,6 +41,9 @@ else
         echo "llvm toolset-7.0 does not need to be manually activated"
     fi
 
-    bin/gn gen $cur__target_dir/out/Static --script-executable="$PYTHON_BINARY" "--args=cc=\"$CC\" cxx=\"$CXX\" skia_use_system_libjpeg_turbo=true is_debug=false extra_cflags=[\"-I${ESY_LIBJPEG_TURBO_PREFIX}/include\", \"-Wno-poison-system-directories\"] extra_ldflags=[\"-L${ESY_LIBJPEG_TURBO_PREFIX}/lib\", \"-ljpeg\" ]" || exit -1
-    ninja.exe -C $cur__target_dir/out/Static
+    bin/gn gen $cur__target_dir/out/Static --script-executable="$PYTHON_BINARY" "--args=cc=\"$CC\" cxx=\"$CXX\" skia_use_system_libjpeg_turbo=true skia_enable_tools=true is_debug=false extra_cflags=[\"-I${ESY_LIBJPEG_TURBO_PREFIX}/include\"] extra_ldflags=[\"-L${ESY_LIBJPEG_TURBO_PREFIX}/lib\", \"-ljpeg\" ]" || exit -1
+    ninja.exe -C $cur__target_dir/out/Static skia skia.h experimental_svg_model || exit -1
+    
+    # Add the SVG object files to the Skia archive
+    ar r $cur__target_dir/out/Static/libskia.a $cur__target_dir/out/Static/obj/experimental/svg/model/*.o
 fi

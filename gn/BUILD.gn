@@ -386,6 +386,9 @@ config("warnings") {
       "-Wno-suggest-destructor-override",
       "-Wno-suggest-override",
       "-Wno-uninitialized-const-reference",
+
+      # macOS cross-compilation fix
+      "-Wno-poison-system-directories",
     ]
 
     if (target_cpu == "arm" && is_ios) {
