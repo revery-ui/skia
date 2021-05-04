@@ -2,7 +2,6 @@ use_relative_paths = True
 
 deps = {
   "buildtools"                          : "https://chromium.googlesource.com/chromium/buildtools.git@505de88083136eefd056e5ee4ca0f01fe9b33de8",
-  "common"                              : "https://skia.googlesource.com/common.git@9737551d7a52c3db3262db5856e6bcd62c462b92",
   "third_party/externals/angle2"        : "https://chromium.googlesource.com/angle/angle.git@b001528ffa00e7c15a5002124f707570e59a5697",
   "third_party/externals/dng_sdk"       : "https://android.googlesource.com/platform/external/dng_sdk.git@96443b262250c390b0caefbf3eed8463ba35ecae",
   "third_party/externals/expat"         : "https://android.googlesource.com/platform/external/expat.git@android-6.0.1_r55",
@@ -28,5 +27,3 @@ deps = {
   #"third_party/externals/v8"            : "https://chromium.googlesource.com/v8/v8.git@5f1ae66d5634e43563b2d25ea652dfb94c31a3b4",
   "third_party/externals/zlib"          : "https://chromium.googlesource.com/chromium/src/third_party/zlib@e7afdfe128e01ca480a28f757b571957befdd962",
 }
-
-recursedeps = [ "common" ]
