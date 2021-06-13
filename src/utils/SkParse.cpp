@@ -9,6 +9,7 @@
 #include "SkParse.h"
 
 #include <stdlib.h>
+#include <locale>
 
 static inline bool is_between(int c, int min, int max)
 {
@@ -203,14 +204,19 @@ const char* SkParse::FindScalar(const char str[], SkScalar* value) {
     SkASSERT(str);
     str = skip_ws(str);
 
+    locale_t cLocale = newlocale(LC_NUMERIC_MASK, "C", NULL);
+
     char* stop;
-    float v = (float)strtod(str, &stop);
+    float v = (float)strtod_l(str, &stop, cLocale);
     if (str == stop) {
         return nullptr;
     }
     if (value) {
         *value = v;
     }
+    
+    freelocale(cLocale);
+
     return stop;
 }
 
