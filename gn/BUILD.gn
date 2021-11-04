@@ -387,6 +387,9 @@ config("warnings") {
       "-Wno-suggest-override",
       "-Wno-uninitialized-const-reference",
 
+      # clang 12? fixes
+      "-Wno-four-char-constants",
+
       # macOS cross-compilation fix
       "-Wno-poison-system-directories",
     ]
