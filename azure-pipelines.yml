@@ -8,7 +8,7 @@ jobs:
 - job: Linux	
   timeoutInMinutes: 0	
   pool:
-    vmImage: 'Ubuntu 16.04'	
+    vmImage: 'Ubuntu-18.04'	
 
   variables:
     STAGING_DIRECTORY: /home/vsts/STAGING	
@@ -91,7 +91,7 @@ jobs:
   displayName: 'Linux - CentOS - Docker Image'
   timeoutInMinutes: 0
   pool:
-    vmImage: 'Ubuntu 16.04'
+    vmImage: 'Ubuntu-18.04'
 
   variables:
     STAGING_DIRECTORY: $(Build.StagingDirectory)
