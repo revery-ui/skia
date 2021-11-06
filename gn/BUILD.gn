@@ -13,6 +13,7 @@ declare_args() {
   extra_ldflags = []
 
   malloc = ""
+  xcode_sysroot = ""
 
   enable_bitcode = false
   if (is_tvos || is_watchos) {
@@ -20,7 +21,7 @@ declare_args() {
   }
 }
 
-if (is_ios) {
+if (is_ios && xcode_sysroot == "") {
   if (is_tvos) {
     sdk = "appletv"
   } else if (is_watchos) {
@@ -34,6 +35,17 @@ if (is_ios) {
     sdk += "os"
   }
   ios_sysroot = exec_script("find_ios_sysroot.py", [ sdk ], "trim string")
+  xcode_sysroot =
+      exec_script("find_xcode_sysroot.py", [ sdk ], "trim string")
+}
+
+# If building for mac on a mac then lookup all the system includes so that goma and the clang
+# shipped with chrome can find them. When the gn_to_bp.py tool is run, then the host_os != mac.
+# In this case leave the xcode_sysroot empty, and the cc/c++ that come with XCode will be able to
+# find needed include paths.
+if (is_mac && host_os == "mac" && xcode_sysroot == "") {
+  xcode_sysroot =
+      exec_script("find_xcode_sysroot.py", [ "macosx" ], "trim string")
 }
 
 config("default") {
@@ -252,12 +264,46 @@ config("default") {
     libs += [ "pthread" ]
   }
   if (is_mac) {
+    # If there was a xcode_sysroot set in args or calculated then use it, else don't set anything
+    # because the XCode cc/c++ already know all this stuff.
+    if (xcode_sysroot != "") {
+      asmflags += [
+        "-isysroot",
+        xcode_sysroot,
+      ]
+      cflags += [
+        "-isysroot",
+        xcode_sysroot,
+      ]
+      ldflags += [
+        "-isysroot",
+        xcode_sysroot,
+      ]
+    }
+
     # Disable linker warnings.  They're usually just annoyances like,
     #   ld: warning: text-based stub file
     #     /System/Library/Frameworks/foo.framework/foo.tbd and library file
     #     /System/Library/Frameworks/foo.framework/foo are out of sync.
     #     Falling back to library file for linking.
     ldflags += [ "-Wl,-w" ]
+
+    # As of 11/2020, gn is an x86 binary and defaults the host_cpu to x86_64.
+    # This allows you to build arm64 mac binaries by setting target_cpu = "arm64"
+    if (current_cpu == "arm64") {
+      asmflags += [
+        "-target",
+        "arm64-apple-macos11",
+      ]
+      cflags += [
+        "-target",
+        "arm64-apple-macos11",
+      ]
+      ldflags += [
+        "-target",
+        "arm64-apple-macos11",
+      ]
+    }
   }
 
   if (sanitize != "") {
@@ -354,7 +400,6 @@ config("warnings") {
     ]
   } else {
     cflags += [
-      "-Werror",
       "-Wall",
       "-Wextra",
       "-Winit-self",
@@ -364,16 +409,23 @@ config("warnings") {
 
       "-Wno-deprecated-declarations",
       "-Wno-maybe-uninitialized",
-      "-Wno-extra-semi-stmt",
     ]
     cflags_cc += [
       "-Wnon-virtual-dtor",
       "-Wno-noexcept-type",
+
+      # GCC 8+ bundles a number of fundamentally different warnings under this same flag,
+      # ranging from false positive (only copying a prefix of SkRRect from serialized form)
+      # to possibly useful (memcpy() with non-trivial types).  Annoyingly you can't really
+      # break them up any finer.
+      # TODO(mtklein): suppress / fix each site as appropriate?
+      "-Wno-class-memaccess",
     ]
   }
 
   if (is_clang) {
     cflags += [
+      "-fcolor-diagnostics",
       "-Weverything",
       "-Wno-unknown-warning-option",  # Let older Clangs ignore newer Clangs' warnings.
 
@@ -441,6 +493,7 @@ config("warnings") {
       "-Wno-unused-member-function",
       "-Wno-unused-template",
       "-Wno-zero-as-null-pointer-constant",
+      "-Wno-thread-safety-negative",
     ]
     cflags_cc += [
       "-Wno-abstract-vbase-init",
@@ -461,6 +514,7 @@ config("warnings") {
       "-Wno-c++98-compat",
       "-Wno-c++98-compat-pedantic",
       "-Wno-undefined-func-template",
+      "-Wno-return-std-move-in-c++11",
     ]
     cflags_objc += [
       "-Wno-direct-ivar-access",
