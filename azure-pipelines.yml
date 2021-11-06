@@ -27,7 +27,7 @@ jobs:
 - job: MacOS	
   timeoutInMinutes: 0	
   pool:
-    vmImage: 'macOS 10.14'	
+    vmImage: 'macOS 10.15'	
 
   variables:
     STAGING_DIRECTORY: /Users/vsts/STAGING	
