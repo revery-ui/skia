@@ -365,10 +365,12 @@ config("warnings") {
       "-Wno-deprecated-declarations",
       "-Wno-maybe-uninitialized",
       "-Wno-extra-semi-stmt",
+      "-Wno-reserved-identifier",
     ]
     cflags_cc += [
       "-Wnon-virtual-dtor",
       "-Wno-noexcept-type",
+      "-Wno-reserved-identifier",
     ]
   }
 
